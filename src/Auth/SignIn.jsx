@@ -12,7 +12,6 @@ SignIn.propTypes = {};
 
 function SignIn(props) {
   const dispatch = useDispatch();
-  
 
   const [username, set_username] = useState("");
   const [password, set_password] = useState("");
@@ -36,15 +35,13 @@ function SignIn(props) {
         username,
         password,
       };
-   
+
       //   const query = "?" + queryString.stringify(params);
 
       // const response = await User.Get_Detail_User(query)
-      const response = await User.Login(params)
-        .then((res) => res)
-      console.log(response)
+      const response = await User.Login(params).then((res) => res);
+     
 
-    
       if (response.status === "error") {
         if (response.message === "Please enter enough information") {
           set_error_username(true);
@@ -55,19 +52,14 @@ function SignIn(props) {
         }
       } else {
         sessionStorage.setItem("id_user", response.user.id);
-       
-          set_redirect(true);
-        
+
+        set_redirect(true);
 
         // const action = addSession(response.id);
         // dispatch(action);
 
-        
-
         // const action_count_change = changeCount(count_change);
         // dispatch(action_count_change);
-
-       
       }
     };
 

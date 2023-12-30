@@ -13,7 +13,7 @@ const User = {
   },
 
   Put_User: (data) => {
-    const url = `/api/User`;
+    const url = `/api/update`;
     return axiosClient.put(url, data);
   },
 
@@ -31,6 +31,11 @@ const User = {
   Register: (data) => {
     const url = "/api/register";
     return axiosClient.post(url, data);
+  },
+
+  Delete: (id) => {
+    const url = `/api/delete/${id}`;
+    return axiosClient.delete(url);
   },
 };
 

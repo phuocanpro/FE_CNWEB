@@ -75,6 +75,7 @@ function Header(props) {
 
       const fetchData = async () => {
         const response = await User.Get_User(sessionStorage.getItem("id_user"));
+        console.log("header", response);
         set_user(response);
       };
 
@@ -225,9 +226,7 @@ function Header(props) {
                         aria-expanded="false"
                         aria-controls="collapseExample"
                       >
-
                         {user.name}
-
                       </span>
                     ) : (
                       <button
@@ -241,7 +240,6 @@ function Header(props) {
                           color: "#fff",
                           height: "35px",
                           width: "100px",
-
                         }}
                       >
                         |||
@@ -268,9 +266,10 @@ function Header(props) {
                         )}
 
                         <li className="li_setting">
-                          <a onClick={handler_logout} href="#">
+                          <Link to="/signin" onClick={handler_logout}>
+                            {" "}
                             Log Out
-                          </a>
+                          </Link>
                         </li>
                       </ul>
                     ) : (
@@ -296,9 +295,7 @@ function Header(props) {
             <div className="col-lg-3">
               <div className="logo pb-sm-30 pb-xs-30">
                 <Link to="/">
-
                   <img src={logo} style={{ width: "150px", height: "90px" }} />
-
                 </Link>
               </div>
             </div>

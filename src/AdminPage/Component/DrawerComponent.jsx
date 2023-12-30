@@ -1,5 +1,12 @@
 import { Drawer } from "antd";
 
+import styled from "styled-components";
+const StyledDrawer = styled(Drawer)`
+  .ant-drawer-content {
+    overflow: auto;
+  }
+`;
+
 const DrawerComponent = ({
   title = "Drawer",
   placement = "right",
@@ -9,9 +16,14 @@ const DrawerComponent = ({
 }) => {
   return (
     <>
-      <Drawer title={title} placement={placement} open={isOpen} {...rests}>
+      <StyledDrawer
+        title={title}
+        placement={placement}
+        open={isOpen}
+        {...rests}
+      >
         {children}
-      </Drawer>
+      </StyledDrawer>
     </>
   );
 };

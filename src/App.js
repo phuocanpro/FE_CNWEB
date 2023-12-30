@@ -98,8 +98,6 @@ const SignUp = lazy(() => {
   });
 });
 
-const response = User.Get_User(sessionStorage.getItem("id_user"));
-
 const Admin = lazy(() => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(import("./AdminPage/AdminPage")), 2000);
@@ -151,21 +149,12 @@ function App() {
             <Route path="/cart" component={Cart} />
             <Route path="/checkout" component={Checkout} />
             <Route path="/favorite" component={Favorite} />
-
             <Route exact path="/event" component={Event} />
             <Route path="/event/:id" component={DetailEvent} />
-
             <Route path="/contact" component={Contact} />
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
-
-          if (response.role === "admin"){
-             <Route path="/admin" component={Admin} />
-          } else {
-            <Route path="/" component={SignIn} />
-          }
-           
-
+            <Route path="/admin" component={Admin} />
             <Route path="/success" component={OrderSuccess} />
             <Route path="/fail" component={OrderFail} />
             <Route path="/momo" component={OrderMomo} />

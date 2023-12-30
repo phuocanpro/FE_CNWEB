@@ -18,13 +18,11 @@ const AdminUser = () => {
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
 
   const [users, setUsers] = useState([]);
-  const user = User.Get_User(sessionStorage.getItem("id_user"));
-  console.log("user", user);
 
   const [stateUserDetails, setStateUserDetails] = useState({
-    userName: "",
+    id: "",
+    name: "",
     email: "",
-    password: "",
     isAdmin: "",
     phone: "",
     address: "",
@@ -38,7 +36,6 @@ const AdminUser = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect is running");
     const fetchData = async () => {
       try {
         const usersData = await getAllUsers();
@@ -51,30 +48,14 @@ const AdminUser = () => {
     fetchData();
   }, []);
 
-  const onUpdateUser = () => {
-    mutationUpdate.mutate(
-      {
-        id: rowSelected,
-        ...stateUserDetails,
-      }
-      //   {
-      //     onSettled: () => {
-      //       queryUser.refetch();
-      //     },
-      //   }
-    );
-  };
-
-  //   const mutationDelete = useMutationHooks(async (data) => {
-  //     const { id, token } = data;
-  //     const res = await UserService.deleteUser(id, token);
-  //     return res;
-  //   });
-
-  const mutationUpdate = async (data) => {
-    const { id, ...rests } = data;
-    const res = await User.Put_User(id, { ...rests });
-    return res;
+  const onUpdateUser = async () => {
+    const res = await User.Put_User(stateUserDetails);
+    if (res.status === "SUCCESS") {
+      message.success("Success");
+      handleCloseDrawer();
+    } else {
+      message.error("Error");
+    }
   };
 
   //   const mutationDeleteMany = useMutationHooks(async (data) => {
@@ -92,12 +73,6 @@ const AdminUser = () => {
   //       }
   //     );
   //   };
-  //   const {
-  //     data: dataDeleted,
-  //     isLoading: isLoadingDeleted,
-  //     isSuccess: isSuccessDeleted,
-  //     isError: isErrorDeleted,
-  //   } = mutationDelete;
 
   //   const {
   //     data: dataDeletedMany,
@@ -106,27 +81,19 @@ const AdminUser = () => {
   //     isError: isErrorDeletedMany,
   //   } = mutationDeleteMany;
 
-  const {
-    data: dataUpdated,
-    isLoading: isLoadingUpdated,
-    isSuccess: isSuccessUpdated,
-isError: isErrorUpdated,
-  } = mutationUpdate;
-
   const [userDetails, setUserDetails] = useState({});
-  const fetchGetDetailsUser = async () => {
-    const data = User.Get_User(rowSelected);
-    setUserDetails(data);
+  const fetchGetDetailsUser = async (rowSelected) => {
+    const response = await User.Get_User(rowSelected);
+    setUserDetails(response);
     setStateUserDetails({
-      userName: userDetails?.name,
+      id: userDetails?.id,
+      name: userDetails?.name,
       email: userDetails?.email,
       password: userDetails?.password,
       isAdmin: userDetails?.role,
       phone: userDetails?.phone,
       address: userDetails?.address,
     });
-    console.log("stateUserDetails", userDetails?.name);
-    // setIsLoadingUpdate(false);
   };
   useEffect(() => {
     form.setFieldsValue(stateUserDetails);
@@ -134,10 +101,8 @@ isError: isErrorUpdated,
 
   useEffect(() => {
     if (rowSelected && isOpenDrawer) {
-      //   setIsLoadingUpdate(true);
       fetchGetDetailsUser(rowSelected);
     }
-    // setIsOpenDrawer(true);
   }, [rowSelected, isOpenDrawer]);
 
   const renderAction = () => {
@@ -226,7 +191,7 @@ isError: isErrorUpdated,
         }}
       />
     ),
-onFilter: (value, record) =>
+    onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -282,7 +247,7 @@ onFilter: (value, record) =>
     ? users?.map((user) => {
         return {
           ...user,
-          userName: user.name,
+          name: user.name,
           key: user.id,
           isAdmin: user.role === "admin" ? "TRUE" : "FALSE",
         };
@@ -292,33 +257,15 @@ onFilter: (value, record) =>
   const handleCloseDrawer = () => {
     setIsOpenDrawer(false);
     setStateUserDetails({
-      userName: "",
+      id: "",
+      name: "",
       email: "",
-      password: "",
       isAdmin: "",
       phone: "",
       address: "",
     });
     form.resetFields();
   };
-
-  useEffect(() => {
-    if (isSuccessUpdated && dataUpdated?.status === "OK") {
-      message.success();
-      handleCloseDrawer();
-    } else if (isErrorUpdated) {
-      message.error();
-    }
-  }, [isSuccessUpdated, isErrorUpdated]);
-
-  //   useEffect(() => {
-  //     if (isSuccessDeleted && dataDeleted?.status === "OK") {
-  //       message.success();
-  //       handleCancelDelete();
-  //     } else if (isErrorDeleted) {
-  //       message.error();
-  //     }
-  //   }, [isSuccessDeleted, isErrorDeleted]);
 
   //   useEffect(() => {
   //     if (isSuccessDeletedMany && dataDeletedMany?.status === "OK") {
@@ -332,18 +279,20 @@ onFilter: (value, record) =>
   };
   const handleCancelDelete = () => {
     setIsModalOpenDelete(false);
+    console.log("isModalOpenDelete", isModalOpenDelete);
   };
 
-  //   const handleDeleteUser = () => {
-  //     mutationDelete.mutate(
-  //       { id: rowSelected, token: user?.access_token },
-  //       {
-  //         onSettled: () => {
-  //           queryUser.refetch();
-  //         },
-  //       }
-  //     );
-  //   };
+  const handleDeleteUser = async () => {
+    const res = await User.Delete(String(rowSelected));
+    if (res.status === "success") {
+      handleCancelDelete();
+      message.success("Success");
+      const updatedUsers = await getAllUsers();
+      setUsers(Array.from(updatedUsers));
+    } else {
+      message.error("Error");
+    }
+  };
 
   const handleOnchangeDetails = (e) => {
     setStateUserDetails({
@@ -353,7 +302,7 @@ onFilter: (value, record) =>
   };
   return (
     <div style={{ marginTop: "10px" }}>
-<WrapperHeader>Manager Users</WrapperHeader>
+      <WrapperHeader>Manager Users</WrapperHeader>
       <div style={{ marginTop: "20px" }}>
         <TableComponent
           //   handleDeleteMany={handleDeleteManyUsers}
@@ -372,7 +321,7 @@ onFilter: (value, record) =>
         title="Details User"
         isOpen={isOpenDrawer}
         onClose={() => setIsOpenDrawer(false)}
-        width="90%"
+        width="50%"
       >
         <Form
           name="basic"
@@ -385,14 +334,14 @@ onFilter: (value, record) =>
           form={form}
         >
           <Form.Item
-            label="UserName"
-            name="userName"
-            rules={[{ required: true, message: "Please input userName!" }]}
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input name!" }]}
           >
             <InputComponent
-              value={stateUserDetails.userName}
+              value={stateUserDetails.name}
               onChange={handleOnchangeDetails}
-              name="userName"
+              name="name"
             />
           </Form.Item>
 
@@ -405,17 +354,6 @@ onFilter: (value, record) =>
               value={stateUserDetails.email}
               onChange={handleOnchangeDetails}
               name="email"
-            />
-          </Form.Item>
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Please input password!" }]}
-          >
-            <InputComponent
-              value={stateUserDetails.password}
-              onChange={handleOnchangeDetails}
-              name="password"
             />
           </Form.Item>
           <Form.Item
@@ -452,11 +390,6 @@ onFilter: (value, record) =>
             />
           </Form.Item>
 
-          <Form.Item
-label="Avatar"
-            name="avatar"
-            rules={[{ required: true, message: "Please input avatar!" }]}
-          ></Form.Item>
           <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
             <Button type="primary" htmlType="submit">
               Submit
@@ -468,7 +401,7 @@ label="Avatar"
         title="Delete User"
         open={isModalOpenDelete}
         onCancel={handleCancelDelete}
-        // onOk={handleDeleteUser}
+        onOk={handleDeleteUser}
       >
         <div>Are you sure delete this user?</div>
       </ModalComponent>
