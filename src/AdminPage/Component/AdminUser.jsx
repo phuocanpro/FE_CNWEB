@@ -74,12 +74,16 @@ const AdminUser = () => {
   //     );
   //   };
 
- 
+  //   const {
+  //     data: dataDeletedMany,
+  //     isLoading: isLoadingDeletedMany,
+  //     isSuccess: isSuccessDeletedMany,
+  //     isError: isErrorDeletedMany,
+  //   } = mutationDeleteMany;
 
   const [userDetails, setUserDetails] = useState({});
   const fetchGetDetailsUser = async (rowSelected) => {
     const response = await User.Get_User(rowSelected);
-    console.log("res",response);
     setUserDetails(response);
     setStateUserDetails({
       id: userDetails?.id,
@@ -263,7 +267,13 @@ const AdminUser = () => {
     form.resetFields();
   };
 
-  
+  //   useEffect(() => {
+  //     if (isSuccessDeletedMany && dataDeletedMany?.status === "OK") {
+  //       message.success();
+  //     } else if (isErrorDeletedMany) {
+  //       message.error();
+  //     }
+  //   }, [isSuccessDeletedMany, isErrorDeletedMany]);
   const handleDetailsUsers = () => {
     setIsOpenDrawer(true);
   };

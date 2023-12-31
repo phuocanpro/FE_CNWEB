@@ -8,7 +8,7 @@ import { addUser, deleteCart } from "../Redux/Action/ActionCart";
 import { changeCount } from "../Redux/Action/ActionCount";
 import { addSession, deleteSession } from "../Redux/Action/ActionSession";
 import queryString from "query-string";
-import Product from "../API/Dishes";
+import Product from "../API/Product";
 import { addSearch } from "../Redux/Action/ActionSearch";
 import CartsLocal from "./CartsLocal";
 
@@ -75,6 +75,7 @@ function Header(props) {
 
       const fetchData = async () => {
         const response = await User.Get_User(sessionStorage.getItem("id_user"));
+        console.log("header", response);
         set_user(response);
       };
 
@@ -225,7 +226,7 @@ function Header(props) {
                         aria-expanded="false"
                         aria-controls="collapseExample"
                       >
-                        {user.fullname}
+                        {user.name}
                       </span>
                     ) : (
                       <button
@@ -235,9 +236,10 @@ function Header(props) {
                         aria-controls="collapseExample"
                         style={{
                           background: "#FF0000",
-                          color: '#fff',
-                          height:'35px',
-                          width: '100px'
+
+                          color: "#fff",
+                          height: "35px",
+                          width: "100px",
                         }}
                       >
                         |||
@@ -257,10 +259,17 @@ function Header(props) {
                         <li className="li_setting">
                           <Link to="/history">Order Status</Link>
                         </li>
+                        {user?.role === "admin" && (
+                          <li className="li_setting">
+                            <Link to="/admin">Management</Link>
+                          </li>
+                        )}
+
                         <li className="li_setting">
-                          <a onClick={handler_logout} href="#">
+                          <Link to="/signin" onClick={handler_logout}>
+                            {" "}
                             Log Out
-                          </a>
+                          </Link>
                         </li>
                       </ul>
                     ) : (
@@ -286,7 +295,7 @@ function Header(props) {
             <div className="col-lg-3">
               <div className="logo pb-sm-30 pb-xs-30">
                 <Link to="/">
-                  <img src={logo} style={{ width: "150px", height:"90px" }} />
+                  <img src={logo} style={{ width: "150px", height: "90px" }} />
                 </Link>
               </div>
             </div>
@@ -436,6 +445,43 @@ function Header(props) {
                       </li>
                       <li className="megamenu-holder">
                         <Link to="/shop/all">Menu</Link>
+                        <ul class="megamenu hb-megamenu">
+                          <li>
+                            <Link to="/shop/all">Male</Link>
+                            <ul>
+                              {male &&
+                                male.map((value) => (
+                                  <li key={value._id}>
+                                    <Link
+                                      to={`/shop/${value._id}`}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      {value.category}
+                                    </Link>
+                                  </li>
+                                ))}
+                            </ul>
+                          </li>
+                          <li>
+                            <Link to="/shop">Female</Link>
+                            <ul>
+                              {female &&
+                                female.map((value) => (
+                                  <li key={value._id}>
+                                    <Link
+                                      to={`/shop/${value._id}`}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      {value.category}
+                                    </Link>
+                                  </li>
+                                ))}
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <Link to="/event">Event</Link>
                       </li>
                       <li>
                         <Link to="/contact">Contact</Link>
