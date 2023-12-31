@@ -16,12 +16,10 @@ import Product from "../../API/Product";
 const AdminDish = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [rowSelected, setRowSelected] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
-
   const [dishes, setDishes] = useState([]);
-
   const [dishDetails, setDishDetails] = useState({});
-
   const [stateDish, setStateDish] = useState({
     dishName: "",
     description: "",
@@ -36,6 +34,16 @@ const AdminDish = () => {
   });
 
   const [form] = Form.useForm();
+
+  const onUpdateDish = async () => {
+    const res = await Product.Put_Dish(stateDishDetails);
+    if (res.status === "SUCCESS") {
+      message.success("Success");
+      handleCloseDrawer();
+    } else {
+      message.error("Error");
+    }
+  };
 
   const getAllDishes = async () => {
     const res = Product.Get_All_Product();
@@ -55,35 +63,18 @@ const AdminDish = () => {
     fetchData();
   }, []);
 
-  // const onUpdateDish = () => {
-  //   mutationUpdate.mutate(
-  //     {
-  //       id: rowSelected,
-  //       ...stateDishDetails,
-  //     }
-     
-  //   );
-  // };
-
-
-
-//   const mutationUpdate = async (data) => {
-//     const { id, ...rests } = data;
-//     const res = await Product.Put_Dish(id, { ...rests });
-//     return res;
-//   };
-
-
-//   const {
-//     data: dataUpdated,
-//     isLoading: isLoadingUpdated,
-//     isSuccess: isSuccessUpdated,
-// isError: isErrorUpdated,
-//   } = mutationUpdate;
-
-
-  const fetchGetDetailsDish = async () => {
-    const data = Product.Get_All_Product(rowSelected);
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setStateDish({
+      dishName: "",
+      description: "",
+      price: "",
+      img: "",
+    });
+    form.resetFields();
+  };
+  const fetchGetDetailsDish = async (rowSelected) => {
+    const data = Product.Get_Detail_Product(rowSelected);
     setDishDetails(data);
     setStateDishDetails({
       dishName: dishDetails?.name,
@@ -91,8 +82,8 @@ const AdminDish = () => {
       price: dishDetails?.price,
       img: dishDetails?.img,
     });
-    console.log("stateDishDetails", dishDetails);
-    // setIsLoadingUpdate(false);
+    console.log("data", data);
+   
   };
   useEffect(() => {
     form.setFieldsValue(stateDishDetails);
@@ -200,6 +191,15 @@ onFilter: (value, record) =>
       }
     },
   });
+ 
+  const onFinish = () => {
+    const params = {
+      dishName: stateDish.dishName,
+      description: stateDish.description,
+      price: stateDish.price,
+      img: stateDish.img,
+    };
+  };
 
   const columns = [
     {
@@ -247,14 +247,12 @@ onFilter: (value, record) =>
     form.resetFields();
   };
 
-  // useEffect(() => {
-  //   if (isSuccessUpdated && dataUpdated?.status === "OK") {
-  //     message.success();
-  //     handleCloseDrawer();
-  //   } else if (isErrorUpdated) {
-  //     message.error();
-  //   }
-  // }, [isSuccessUpdated, isErrorUpdated]);
+  const handleOnchange = (e) => {
+    setStateDish({
+      ...stateDish,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   
   const handleDetailsDishes = () => {
@@ -263,7 +261,17 @@ onFilter: (value, record) =>
   const handleCancelDelete = () => {
     setIsModalOpenDelete(false);
   };
-
+  const handleDeleteDish = async () => {
+    const res = await Product.Delete(String(rowSelected));
+    if (res.status === "success") {
+      handleCancelDelete();
+      message.success("Success");
+      const updatedDishes = await getAllDishes();
+      setDishes(Array.from(updatedDishes));
+    } else {
+      message.error("Error");
+    }
+  };
   
 
   const handleOnchangeDetails = (e) => {
@@ -273,18 +281,18 @@ onFilter: (value, record) =>
     });
   };
 
-  // const handleOnchangeAvatarDetails = async ({ fileList }) => {
-  //   const file = fileList[0];
-  //   if (!file.url && !file.preview) {
-  //     file.preview = await getBase64(file.originFileObj);
-  //   }
+  const handleOnchangeAvatarDetails = async ({ fileList }) => {
+    const file = fileList[0];
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
 
-  //   console.log("file", file.preview);
-  //   setStateDishDetails({
-  //     ...stateDishDetails,
-  //     image: file.preview,
-  //   });
-  // };
+    console.log("file", file.preview);
+    setStateDishDetails({
+      ...stateDishDetails,
+      img: file.preview,
+    });
+  };
   const handleOnchangeAvatar = async ({ fileList }) => {
     const file = fileList[0];
     if (!file.url && !file.preview) {
@@ -302,7 +310,6 @@ onFilter: (value, record) =>
 <WrapperHeader>Manager Dishes</WrapperHeader>
       <div style={{ marginTop: "20px" }}>
         <TableComponent
-          //   handleDeleteMany={handleDeleteManyUsers}
           columns={columns}
           data={dataTable}
           onRow={(record, rowIndex) => {
@@ -314,6 +321,89 @@ onFilter: (value, record) =>
           }}
         />
       </div>
+      <ModalComponent
+        forceRender
+        title="Add New Dish"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        {" "}
+        <Form
+          name="basic"
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
+          style={{ maxWidth: 600 }}
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          autoComplete="off"
+          form={form}
+        >
+          <Form.Item
+            label="DishName"
+            name="dishName"
+            rules={[{ required: true, message: "Please input name dish!" }]}
+          >
+            <InputComponent
+              value={stateDish.name}
+              onChange={handleOnchange}
+              name="name"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Please input description dish!" }]}
+          >
+            <InputComponent
+                value={stateDish.description}
+                onChange={handleOnchange}
+                name="description"
+              />
+
+          <Form.Item
+            label="Price"
+            name="price"
+            rules={[{ required: true, message: "Please input price dish!" }]}
+          >
+            <InputComponent
+              value={stateDish.price}
+              onChange={handleOnchange}
+              name="price"
+            />
+          </Form.Item>
+          <Form.Item
+            label="Img"
+            name="img"
+            rules={[{ required: true, message: "Please input image!" }]}
+          >
+            <WrapperUploadFile onChange={handleOnchangeAvatar} maxCount={1}>
+              <Button type="button">Select File</Button>
+              {stateDish?.img && (
+                <img
+                  src={stateDish?.img}
+                  style={{
+                    height: "60px",
+                    width: "60px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    marginLeft: "10px",
+                  }}
+                  alt="dish"
+                />
+              )}
+            </WrapperUploadFile>
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+          </Form.Item>
+        </Form>
+      </ModalComponent>
+
       <DrawerComponent
         title="Details Dish"
         isOpen={isOpenDrawer}
@@ -326,7 +416,7 @@ onFilter: (value, record) =>
           wrapperCol={{ span: 18 }}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
-          // onFinish={onUpdateDish}
+          onFinish={onUpdateDish}
           autoComplete="on"
           form={form}
         >
@@ -367,11 +457,11 @@ onFilter: (value, record) =>
         
 
           <Form.Item
-            label="Image"
+            label="Img"
             name="img"
-            rules={[{ required: true, message: "Please input image!" }]}
+            rules={[{ required: false, message: "Please input image!" }]}
           >
-            <WrapperUploadFile onChange={handleOnchangeAvatar} maxCount={1}>
+            <WrapperUploadFile onChange={handleOnchangeAvatarDetails} maxCount={1}>
               <Button type="button">Select File</Button>
               {stateDishDetails?.img && (
                 <img
@@ -399,7 +489,7 @@ onFilter: (value, record) =>
         title="Delete Dish"
         open={isModalOpenDelete}
         onCancel={handleCancelDelete}
-        // onOk={handleDeleteUser}
+        onOk={handleDeleteDish}
       >
         <div>Are you sure delete this dish?</div>
       </ModalComponent>
