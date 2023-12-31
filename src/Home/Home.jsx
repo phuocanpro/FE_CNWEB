@@ -8,11 +8,12 @@ import bg6 from '../CSS/Image/6.jpg'
 import bg7 from '../CSS/Image/7.jpg'
 import Home_Category from './Component/Home_Category';
 import Home_Product from './Component/Home_Product';
-import Product from '../API/Product';
+import Product from '../API/Dishes';
 import { changeCount } from '../Redux/Action/ActionCount';
 import { useDispatch, useSelector } from 'react-redux';
 import CartsLocal from '../Share/CartsLocal';
 import SaleAPI from '../API/SaleAPI';
+import Image from '../Image/Global';
 
 Home.propTypes = {
 
@@ -92,7 +93,7 @@ function Home(props) {
                         <div>
                             <div className="carousel-inner">
                                 <div className="single-slide align-center-left animation-style-01 bg-1"
-                                    style={{ backgroundImage: `url(https://cdn.shopify.com/s/files/1/2598/6284/files/3rd_Banner_5_1600x.jpg?v=1593522251)` }}>
+                                    style={{ backgroundImage: `url(${Image.BACKGROUND1})` }}>
                                     <div className="slider-progress"></div>
 
                                 </div>
@@ -103,12 +104,12 @@ function Home(props) {
                     <div className="col-lg-4 col-md-4 text-center pt-xs-30">
                         <div className="li-banner">
                             <a href="#">
-                                <img src="https://img3.thuthuatphanmem.vn/uploads/2019/10/14/banner-fashion_113854663.jpg" alt="" />
+                                <img src={Image.BACKGROUND2} alt="" />
                             </a>
                         </div>
                         <div className="li-banner mt-15 mt-sm-30 mt-xs-30">
                             <a href="#">
-                                <img src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/114148366/original/624c3d3004215425a321fa7378f0228beb349e65/do-shopify-store-banner-header-and-slider-image-design-1906.png" alt="" />
+                                <img src={Image.BACKGROUND3} alt="" />
                             </a>
                         </div>
                     </div>
@@ -124,33 +125,32 @@ function Home(props) {
                         <div className="col-lg-4 col-md-4 text-center">
                             <div className="single-banner">
                                 <a href="#">
-                                    <img src="https://image.freepik.com/free-vector/fashion-banner-design-with-shirt-bag-camera-case_83728-1865.jpg" alt="Li's Static Banner" />
+                                    <img src={Image.BACKGROUND4} alt="Li's Static Banner" />
                                 </a>
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4 text-center pt-xs-30">
                             <div className="single-banner">
                                 <a href="#">
-                                    <img src="https://image.freepik.com/free-vector/fashion-sale-banner-collection_23-2148161688.jpg" alt="Li's Static Banner" />
+                                    <img src={Image.BACKGROUND5} />
+                                </a>
+                            </div>
+                            <div className="single-banner">
+                                <a href="#">
+                                    <img src={Image.BACKGROUND6} alt="Li's Static Banner" />
                                 </a>
                             </div>
                         </div>
-                        <div className="col-lg-4 col-md-4 text-center pt-xs-30">
+                        <div className="col-lg-4 col-md-4 text-center">
                             <div className="single-banner">
                                 <a href="#">
-                                    <img src="https://image.freepik.com/free-vector/fashion-sale-banners_52683-11557.jpg" alt="Li's Static Banner" />
+                                    <img src={Image.BACKGROUND7} alt="Li's Static Banner" />
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <Home_Product gender={`Male`} category={'60615da34c9cac0448b4b9a2'} GET_id_modal={GET_id_modal} />
-
-            <Home_Product gender={`Female`} category={'60615da34c9cac0448b4b9a8'} GET_id_modal={GET_id_modal} />
-
-
             <div className="modal fade modal-wrapper" id={id_modal} >
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string'
-import Product from '../API/Product';
+import Product from '../API/Dishes';
 import { Link, useParams } from 'react-router-dom';
 import Products from './Component/Products';
 import Pagination from './Component/Pagination';
@@ -57,7 +57,7 @@ function Shop(props) {
 
             const query = '?' + queryString.stringify(params)
 
-            const response = await Product.Get_Pagination(query)
+            const response = await Product.Get_All_Product(query)
             console.log(response)
 
             setProducts(response)
@@ -189,30 +189,6 @@ function Shop(props) {
                                     <h4 className="li-blog-sidebar-title">All Product</h4>
                                     <ul className="li-blog-archive">
                                         <li><Link to="/shop/all" style={id === 'all' ? { cursor: 'pointer', color: '#fed700' } : { cursor: 'pointer' }}>All</Link></li>
-                                    </ul>
-                                </div>
-                                <div className="li-blog-sidebar pt-25">
-                                    <h4 className="li-blog-sidebar-title">Male</h4>
-                                    <ul className="li-blog-archive">
-                                        {
-                                            male && male.map(value => (
-                                                <li key={value._id}>
-                                                    <Link to={`/shop/${value._id}`} style={id === value._id ? { cursor: 'pointer', color: '#fed700' } : { cursor: 'pointer' }}>{value.category}</Link>
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
-                                </div>
-                                <div className="li-blog-sidebar">
-                                    <h4 className="li-blog-sidebar-title">Female</h4>
-                                    <ul className="li-blog-archive">
-                                        {
-                                            female && female.map(value => (
-                                                <li key={value._id}>
-                                                    <Link to={`/shop/${value._id}`} style={id === value._id ? { cursor: 'pointer', color: '#fed700' } : { cursor: 'pointer' }}>{value.category}</Link>
-                                                </li>
-                                            ))
-                                        }
                                     </ul>
                                 </div>
                             </div>

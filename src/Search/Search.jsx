@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import queryString from 'query-string'
-import Product from '../API/Product';
+import Product from '../API/Dishes';
 import './Search.css'
 import { Link } from 'react-router-dom';
 

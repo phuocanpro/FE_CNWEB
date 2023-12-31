@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import User from "../API/User";
 import { useForm } from "react-hook-form";
 
@@ -14,6 +14,7 @@ function SignUp(props) {
   } = useForm();
   const onSubmit = (data) => console.log(data);
 
+  const [fullname, set_fullname] = useState("");
   const [username, set_username] = useState("");
   const [password, set_password] = useState("");
   const [confirm, set_confirm] = useState("");
@@ -21,14 +22,14 @@ function SignUp(props) {
   const [show_success, set_show_success] = useState(false);
 
   const [errorEmail, setEmailError] = useState(false);
+  const [errorFullname, setFullnameError] = useState(false);
   const [errorUsername, setUsernameError] = useState(false);
   const [errorPassword, setPasswordError] = useState(false);
   const [errorConfirm, setConfirmError] = useState(false);
   const [errorCheckPass, setCheckPass] = useState(false);
 
-  const [email_exist, set_email_exist] = useState(false);
+  const [username_exist, set_username_exist] = useState(false);
 
-  const [redirect, setRedirect] = useState(false);
   const handler_signup = (e) => {
     e.preventDefault();
 
@@ -39,74 +40,93 @@ function SignUp(props) {
       setEmailError(false);
     }
 
-    if (!username) {
-      setUsernameError(true);
+    if (!fullname) {
+      setFullnameError(true);
+      setUsernameError(false);
       setPasswordError(false);
       setConfirmError(false);
       return;
     } else {
+      setFullnameError(false);
       setUsernameError(false);
       setPasswordError(false);
       setConfirmError(false);
 
-      if (!password) {
-        setUsernameError(false);
-        setPasswordError(true);
+      if (!username) {
+        setFullnameError(false);
+        setUsernameError(true);
+        setPasswordError(false);
         setConfirmError(false);
         return;
       } else {
+        setFullnameError(false);
         setUsernameError(false);
         setPasswordError(false);
         setConfirmError(false);
 
-        if (!confirm) {
+        if (!password) {
+          setFullnameError(false);
           setUsernameError(false);
-          setPasswordError(false);
-          setConfirmError(true);
+          setPasswordError(true);
+          setConfirmError(false);
           return;
         } else {
+          setFullnameError(false);
           setUsernameError(false);
           setPasswordError(false);
           setConfirmError(false);
 
-          if (password !== confirm) {
+          if (!confirm) {
+            setFullnameError(false);
+            setUsernameError(false);
+            setPasswordError(false);
+            setConfirmError(true);
+            return;
+          } else {
+            setFullnameError(false);
             setUsernameError(false);
             setPasswordError(false);
             setConfirmError(false);
-            setCheckPass(true);
-            return;
-          } else {
-            setConfirmError(false);
-            setCheckPass(false);
 
-            const fetchData = async () => {
-              const data = {
-                email: email,
-                username: username,
-                password: password,
-                // fullname: fullname,
-                // id_permission: "6087dcb5f269113b3460fce4",
+            if (password !== confirm) {
+              setFullnameError(false);
+              setUsernameError(false);
+              setPasswordError(false);
+              setConfirmError(false);
+              setCheckPass(true);
+              return;
+            } else {
+              setConfirmError(false);
+              setCheckPass(false);
+
+              const fetchData = async () => {
+                const data = {
+                  email: email,
+                  username: username,
+                  password: password,
+                  // fullname: fullname,
+                  // id_permission: "6087dcb5f269113b3460fce4",
+                };
+
+                const response = await User.Register(data);
+
+                console.log(response);
+
+                if (response === "User Da Ton Tai") {
+                  set_username_exist(true);
+                } else {
+                  set_show_success(true);
+                }
               };
 
-              const response = await User.Register(data);
+              fetchData();
 
-              if (response.status === "success") {
-                setRedirect(true);
-              }
-
-              if (response.message === "Email already exists") {
-                set_email_exist(true);
-              } else {
-                set_show_success(true);
-              }
-            };
-
-            fetchData();
-
-            set_email("");
-            set_username("");
-            set_password("");
-            set_confirm("");
+              set_fullname("");
+              set_username("");
+              set_password("");
+              set_fullname("");
+              set_confirm("");
+            }
           }
         }
       }
@@ -129,10 +149,8 @@ function SignUp(props) {
               ></i>
             </div>
             <h4 className="text-center p-3" style={{ color: "#fff" }}>
-              Register successful!
+              Bạn Đã Đăng Ký Thành Công!
             </h4>
-
-            {redirect && <Redirect to="/signin" />}
           </div>
         </div>
       )}
@@ -171,13 +189,22 @@ function SignUp(props) {
                           * Email is required!
                         </span>
                       )}
-                      {email_exist && (
+                    </div>
+                    <div className="col-md-12 mb-20">
+                      <label>Full Name *</label>
+                      <input
+                        className="mb-0"
+                        type="text"
+                        placeholder="First Name"
+                        value={fullname}
+                        onChange={(e) => set_fullname(e.target.value)}
+                      />
+                      {errorFullname && (
                         <span style={{ color: "red" }}>
-                          * Email is Existed!
+                          * Fullname is required!
                         </span>
                       )}
                     </div>
-
                     <div className="col-md-12 mb-20">
                       <label>Username *</label>
                       <input
@@ -190,6 +217,11 @@ function SignUp(props) {
                       {errorUsername && (
                         <span style={{ color: "red" }}>
                           * Username is required!
+                        </span>
+                      )}
+                      {username_exist && (
+                        <span style={{ color: "red" }}>
+                          * Username is Existed!
                         </span>
                       )}
                     </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import Product from '../../API/Product';
+import Product from '../../API/Dishes';
 import queryString from 'query-string'
 import { Link } from 'react-router-dom';
 import Slider from "react-slick";
@@ -62,25 +62,25 @@ function Home_Product(props) {
     const [products, set_products] = useState([])
 
     // Hàm này dùng gọi API trả lại dữ liệu product category
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     const fetchData = async () => {
+        const fetchData = async () => {
 
-    //         const params = {
-    //             id_category: category
-    //         }
+            const params = {
+                id_category: category
+            }
 
-    //         const query = '?' + queryString.stringify(params)
+            const query = '?' + queryString.stringify(params)
 
-    //         const response = await Product.product(query)
+            const response = await Product.Get_Category_Product(query)
 
-    //         set_products(response.splice(0, 7))
+            set_products(response.splice(0, 7))
 
-    //     }
+        }
 
-    //     fetchData()
+        fetchData()
 
-    // }, [])
+    }, [])
 
 
     return (
