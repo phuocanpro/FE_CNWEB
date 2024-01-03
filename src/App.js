@@ -28,7 +28,6 @@ import OrderFail from "./Order/OrderFail";
 // import Profile from "./Profile/Profile";
 // import Search from "./Search/Search";
 import { lazy, Suspense } from "react";
-import OrderMomo from "./Order/OrderMomo";
 import User from "./API/User";
 // import DetailEvent from "./About/DetailEvent";
 
@@ -65,18 +64,6 @@ const Cart = lazy(() => {
 const Favorite = lazy(() => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(import("./Favorite/Favorite")), 2000);
-  });
-});
-
-const Event = lazy(() => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(import("./Event/Event")), 2000);
-  });
-});
-
-const DetailEvent = lazy(() => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(import("./Event/DetailEvent")), 2000);
   });
 });
 
@@ -123,6 +110,7 @@ const Search = lazy(() => {
 });
 
 function App() {
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -149,18 +137,15 @@ function App() {
             <Route path="/cart" component={Cart} />
             <Route path="/checkout" component={Checkout} />
             <Route path="/favorite" component={Favorite} />
-            <Route exact path="/event" component={Event} />
-            <Route path="/event/:id" component={DetailEvent} />
             <Route path="/contact" component={Contact} />
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
-            <Route path="/admin" component={Admin} />
             <Route path="/success" component={OrderSuccess} />
             <Route path="/fail" component={OrderFail} />
-            <Route path="/momo" component={OrderMomo} />
             <Route path="/history" component={History} />
             <Route path="/profile/:id" component={Profile} />
             <Route path="/search" component={Search} />
+            <Route path="/admin" component={Admin} />
           </Switch>
         </Suspense>
         <Footer />

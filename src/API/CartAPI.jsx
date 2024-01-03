@@ -1,27 +1,28 @@
-// import axiosClient from './axiosClient'
+import axiosClient from './axiosClient'
 
-// const Cart = {
+const Cart = {
 
-//     Get_Cart: (query) => {
-//         const url = `/api/Cart${query}`
-//         return axiosClient.get(url)
-//     },
+    addCart: (data) => {
+        const url = `/api/addCart`
+        return axiosClient.post(url, data)
+    },
 
-//     Post_Cart: (data) => {
-//         const url = '/api/Cart'
-//         return axiosClient.post(url, data)
-//     },
+    getQuantity: (user_id) => {
+        const url = '/api/getQuantity'
+        return axiosClient.post(url, user_id)
+    },
 
-//     Put_Cart: (query) => {
-//         const url = `/api/Cart${query}`
-//         return axiosClient.put(url)
-//     },
+    getCartsByUser: user_id => {
+        const url = `/api/getItemCart`
+        return axiosClient.post(url, user_id)
+    },
 
-//     Delete_Cart: (id) => {
-//         const url = `/api/Cart/${id}`
-//         return axiosClient.delete(url)
-//     }
+    removeCart: data => {
+        const url = `/api/removeItemCart?user_id=${data.user_id}&dish_id=${data.dish_id}`
+        console.log(data)
+        return axiosClient.delete(url)
+    }
 
-// }
+}
 
-// export default Cart
+export default Cart

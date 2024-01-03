@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 
 const OrderAPI = {
   post_order: (data) => {
-    const url = `/api/Payment/order`;
+    const url = `/api/createOrder`;
     return axiosClient.post(url, data);
   },
 
@@ -11,16 +11,15 @@ const OrderAPI = {
     return axiosClient.get(url);
   },
 
-  getAll: () => {
-    const url = `/api/getAllOrder`;
-    return axiosClient.get(url);
-  },
-
   get_detail: (id) => {
     const url = `/api/Payment/order/detail/${id}`;
     return axiosClient.get(url);
   },
 
+  get_order_by_user: (user_id) => {
+    const url = `/api/getOrderByUser/${user_id}`;
+    return axiosClient.post(url, {}); // orz
+  },
   post_email: (data) => {
     const url = `/api/Payment/email`;
     return axiosClient.post(url, data);

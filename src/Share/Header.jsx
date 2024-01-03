@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import Cart from "../API/CartAPI";
+import "../API/CartAPI";
+import "../API/OrderAPI";
 import User from "../API/User";
 import logo from "../Image/logof.png";
 import { addUser, deleteCart } from "../Redux/Action/ActionCart";
@@ -11,6 +12,8 @@ import queryString from "query-string";
 import Product from "../API/Product";
 import { addSearch } from "../Redux/Action/ActionSearch";
 import CartsLocal from "./CartsLocal";
+import OrderAPI from "../API/OrderAPI";
+import Cart from "../API/CartAPI";
 
 function Header(props) {
   // State count of cart
@@ -19,6 +22,8 @@ function Header(props) {
   const [total_price, set_total_price] = useState(0);
 
   const [carts_mini, set_carts_mini] = useState([]);
+
+  const user_id = sessionStorage.getItem("id_user")
 
   // Hàm này để khởi tạo localStorage dùng để lưu trữ giỏ hàng
   // Và nó sẽ chạy lần đầu
@@ -49,8 +54,8 @@ function Header(props) {
 
   //Sau khi F5 nó sẽ kiểm tra nếu phiên làm việc của Session vẫn còn thì nó sẽ tiếp tục
   // đưa dữ liệu vào Redux
-  if (sessionStorage.getItem("id_user")) {
-    const action = addSession(sessionStorage.getItem("id_user"));
+  if (user_id) {
+    const action = addSession(user_id);
     dispatch(action);
   }
 
@@ -74,7 +79,7 @@ function Header(props) {
       // user đã đăng nhâp
 
       const fetchData = async () => {
-        const response = await User.Get_User(sessionStorage.getItem("id_user"));
+        const response = await User.Get_User(user_id);
         console.log("header", response);
         set_user(response);
       };
@@ -100,33 +105,40 @@ function Header(props) {
   // Phụ thuộc vào thằng redux count
   useEffect(() => {
     if (count) {
-      showData(JSON.parse(localStorage.getItem("carts")), 0, 0);
+      console.log(sessionStorage.getItem('id_user'))
+      Cart.getCartsByUser({ user_id: sessionStorage.getItem('id_user') })
+        .then(r => {
+          showData(r);
 
-      const action = changeCount(count);
-      dispatch(action);
+          const action = changeCount(count);
+          dispatch(action);
+        })
+
+
     }
   }, [count]);
 
   // Hàm này là hàm con chia ra để xử lý
-  function showData(carts, sum, price) {
-    carts.map((value) => {
-      sum += value.count;
-      price += parseInt(value.price_product) * parseInt(value.count);
-    });
+  function showData(carts) {
+    console.log(carts)
 
-    set_count_cart(sum);
+    set_count_cart(carts.dishDetails.length);
 
-    set_total_price(price);
+    set_total_price(carts.total);
 
-    set_carts_mini(carts);
+    set_carts_mini(carts.dishDetails);
   }
 
   // Hàm này dùng để xóa carts_mini
-  const handler_delete_mini = (id_cart) => {
-    CartsLocal.deleteProduct(id_cart);
-
-    const action_change_count = changeCount(count);
-    dispatch(action_change_count);
+  const handler_delete_mini = dish_id => {
+    Cart.removeCart({
+      user_id: parseInt(user_id),
+      dish_id: parseInt(dish_id)
+    })
+      .then(r => {
+        const action_change_count = changeCount(count);
+        dispatch(action_change_count);
+      })
   };
 
   const [male, set_male] = useState([]);
@@ -288,7 +300,7 @@ function Header(props) {
                       <ul className="setting_ul collapse" id="collapseExample">
                         <li className="li_setting">
                           <Link
-                            to={`/profile/${sessionStorage.getItem("id_user")}`}
+                            to={`/profile/${user_id}`}
                           >
                             Profile
                           </Link>
@@ -378,29 +390,23 @@ function Header(props) {
                           {carts_mini &&
                             carts_mini.map((value, index) => (
                               <li key={index}>
-                                <Link
-                                  to={`/detail/${value.id_product}`}
-                                  className="minicart-product-image"
-                                >
-                                  <img src={value.image} alt="cart products" />
-                                </Link>
                                 <div className="minicart-product-details">
                                   <h6>
-                                    <a>{value.name_product}</a>
+                                    <a>{value.dish_name}</a>
                                   </h6>
                                   <span>
                                     {new Intl.NumberFormat("vi-VN", {
                                       style: "decimal",
                                       decimal: "VND",
-                                    }).format(value.price_product) +
+                                    }).format(value.price) +
                                       " VNĐ"}{" "}
-                                    x {value.count}, {value.size}
+                                    x {value.quantity}
                                   </span>
                                 </div>
                                 <a
                                   className="close"
                                   onClick={() =>
-                                    handler_delete_mini(value.id_cart)
+                                    handler_delete_mini(value.dish_id)
                                   }
                                 >
                                   <i className="fa fa-close"></i>
@@ -445,43 +451,6 @@ function Header(props) {
                       </li>
                       <li className="megamenu-holder">
                         <Link to="/shop/all">Menu</Link>
-                        <ul class="megamenu hb-megamenu">
-                          <li>
-                            <Link to="/shop/all">Male</Link>
-                            <ul>
-                              {male &&
-                                male.map((value) => (
-                                  <li key={value._id}>
-                                    <Link
-                                      to={`/shop/${value._id}`}
-                                      style={{ cursor: "pointer" }}
-                                    >
-                                      {value.category}
-                                    </Link>
-                                  </li>
-                                ))}
-                            </ul>
-                          </li>
-                          <li>
-                            <Link to="/shop">Female</Link>
-                            <ul>
-                              {female &&
-                                female.map((value) => (
-                                  <li key={value._id}>
-                                    <Link
-                                      to={`/shop/${value._id}`}
-                                      style={{ cursor: "pointer" }}
-                                    >
-                                      {value.category}
-                                    </Link>
-                                  </li>
-                                ))}
-                            </ul>
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <Link to="/event">Event</Link>
                       </li>
                       <li>
                         <Link to="/contact">Contact</Link>
