@@ -23,7 +23,7 @@ function Shop(props) {
     //Từng trang hiện tại
     const [pagination, setPagination] = useState({
         page: '1',
-        count: '9',
+        count: '6',
         search: '',
         category: id
     })
@@ -62,22 +62,6 @@ function Shop(props) {
 
             setProducts(response)
 
-
-            // Gọi API để tính tổng số trang cho từng loại sản phẩm
-            const params_total_page = {
-                id_category: id
-            }
-
-            const query_total_page = '?' + queryString.stringify(params_total_page)
-
-            const response_total_page = await Product.Get_Category_Product(query_total_page)
-
-            //Tính tổng số trang = tổng số sản phẩm / số lượng sản phẩm 1 trang
-            const totalPage = Math.ceil(parseInt(response_total_page.length) / parseInt(pagination.count))
-            console.log(totalPage)
-
-            setTotalPage(totalPage)
-
         }
 
         fetchData()
@@ -108,44 +92,6 @@ function Shop(props) {
         fetchData()
 
     }, [pagination])
-
-
-    const [male, set_male] = useState([])
-    const [female, set_female] = useState([])
-
-    // Gọi API theo phương thức GET để load category
-    useEffect(() => {
-
-        const fetchData = async () => {
-
-            // gender = male
-            const params_male = {
-                gender: 'male'
-            }
-
-            const query_male = '?' + queryString.stringify(params_male)
-
-            const response_male = await Product.Get_Category_Gender(query_male)
-
-            set_male(response_male)
-
-            // gender = female
-            const params_female = {
-                gender: 'female'
-            }
-
-            const query_female = '?' + queryString.stringify(params_female)
-
-            const response_female = await Product.Get_Category_Gender(query_female)
-
-            set_female(response_female)
-
-        }
-
-        fetchData()
-
-    }, [])
-
 
     const handler_Search = (value) => {
         console.log("Search: ", value)
@@ -180,11 +126,6 @@ function Shop(props) {
                     <div className="row">
                         <div className="col-lg-3 order-lg-1 order-2">
                             <div className="li-blog-sidebar-wrapper">
-                                <div className="li-blog-sidebar">
-                                    <div className="li-sidebar-search-form">
-                                        <Search handler_Search={handler_Search} />
-                                    </div>
-                                </div>
                                 <div className="li-blog-sidebar pt-25">
                                     <h4 className="li-blog-sidebar-title">All Product</h4>
                                     <ul className="li-blog-archive">
@@ -194,31 +135,11 @@ function Shop(props) {
                             </div>
                         </div>
                         <div className="col-lg-9 order-1 order-lg-2">
-                            <div className="shop-top-bar">
-                                <div className="product-select-box">
-                                    <div className="product-short">
-                                        <p>Sort By:</p>
-                                        <select className="nice-select">
-                                            <option value="trending">Relevance</option>
-                                            <option value="rating">Price (Low &gt; High)</option>
-                                            <option value="rating">Price (High &gt; Low)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                             <div className="shop-products-wrapper">
                                 <div className="tab-content">
                                     <div id="grid-view" className="tab-pane active" role="tabpanel">
                                         <div className="product-area shop-product-area">
                                             <Products products={products} />
-                                        </div>
-                                    </div>
-                                    <div className="paginatoin-area">
-                                        <div className="row">
-                                            <div className="col-lg-6 col-md-6">
-                                                <p>Showing 1-9 of 9 item(s)</p>
-                                            </div>
-                                            <Pagination pagination={pagination} handlerChangePage={handlerChangePage} totalPage={totalPage} />
                                         </div>
                                     </div>
                                 </div>

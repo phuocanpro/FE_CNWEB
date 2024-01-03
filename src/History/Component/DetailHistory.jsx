@@ -4,8 +4,6 @@ import { Link, useParams } from 'react-router-dom';
 // import HistoryAPI from '../../API/HistoryAPI';
 import './History.css'
 import OrderAPI from '../../API/OrderAPI';
-import Detail_OrderAPI from '../../API/Detail_OrderAPI';
-import NoteAPI from '../../API/NoteAPI';
 
 
 function DetailHistory(props) {

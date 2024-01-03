@@ -3,13 +3,14 @@ import axiosClient from './axiosClient'
 const OrderAPI = {
 
     post_order: (data) => {
-        const url = `/api/Payment/order`
+        const url = `/api/createOrder`
+        console.log(data)
         return axiosClient.post(url, data)
     },
 
-    get_order: (id) => {
-        const url = `/api/Payment/order/${id}`
-        return axiosClient.get(url)
+    get_order_by_user: user_id => {
+        const url = `/api/getOrderByUser/${user_id}`
+        return axiosClient.post(url, {}) // orz
     },
 
     get_detail: (id) => {

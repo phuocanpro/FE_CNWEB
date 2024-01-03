@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import SaleAPI from '../../API/SaleAPI';
 
 Home_Category.propTypes = {
     GET_id_modal: PropTypes.func
@@ -57,21 +56,6 @@ function Home_Category(props) {
     const { GET_id_modal } = props
 
     const [product_category, set_product_category] = useState([])
-
-    useEffect(() => {
-
-        const fetchData = async () => {
-
-            const response = await SaleAPI.getList()
-
-            set_product_category(response)
-
-        }
-
-        fetchData()
-
-    }, [])
-
 
     return (
         <div className="product-area pt-60 pb-50">
