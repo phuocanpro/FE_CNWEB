@@ -179,18 +179,55 @@ function Header(props) {
   // Hàm này trả ra list product mà khách hàng tìm kiếm
   // sử dụng useMemo để performance hơn vì nếu mà dữ liệu mới giống với dữ liệu cũ thì nó sẽ lấy cái
   // Không cần gọi API để tạo mới data
-  const search_header = useMemo(() => {
-    const new_data = products.filter((value) => {
-      return (
-        value.name_product
-          .toUpperCase()
-          .indexOf(keyword_search.toUpperCase()) !== -1
-      );
-    });
+  // const search_header = useMemo(() => {
+  //   const new_data = products.filter((value) => {
+  //     return (
+  //       value.name_product
+  //         .toUpperCase()
+  //         .indexOf(keyword_search.toUpperCase()) !== -1
+  //     );
+  //   });
 
-    return new_data;
-  }, [keyword_search]);
+  //   return new_data;
+  // }, [keyword_search]);
 
+  // {keyword_search && (
+  //   <div className="show_search_product">
+  //     {search_header &&
+  //       search_header.map((value) => (
+  //         <div
+  //           className="hover_box_search d-flex"
+  //           key={value._id}
+  //         >
+  //           <Link
+  //             to={`/detail/${value._id}`}
+  //             style={{ padding: ".8rem" }}
+  //           >
+  //             <img
+  //               className="img_list_search"
+  //               src={value.image}
+  //               alt=""
+  //             />
+  //           </Link>
+
+  //           <div
+  //             className="group_title_search"
+  //             style={{ marginTop: "2.7rem" }}
+  //           >
+  //             <h6 className="title_product_search">
+  //               {value.name_product}
+  //             </h6>
+  //             <span className="price_product_search">
+  //               {new Intl.NumberFormat("vi-VN", {
+  //                 style: "decimal",
+  //                 decimal: "VND",
+  //               }).format(value.price_product) + " VNĐ"}
+  //             </span>
+  //           </div>
+  //         </div>
+  //       ))}
+  //   </div>
+  // )}
   const handler_search = (e) => {
     e.preventDefault();
 
@@ -314,43 +351,6 @@ function Header(props) {
                 <button className="li-btn" type="submit">
                   <i className="fa fa-search"></i>
                 </button>
-                {keyword_search && (
-                  <div className="show_search_product">
-                    {search_header &&
-                      search_header.map((value) => (
-                        <div
-                          className="hover_box_search d-flex"
-                          key={value._id}
-                        >
-                          <Link
-                            to={`/detail/${value._id}`}
-                            style={{ padding: ".8rem" }}
-                          >
-                            <img
-                              className="img_list_search"
-                              src={value.image}
-                              alt=""
-                            />
-                          </Link>
-
-                          <div
-                            className="group_title_search"
-                            style={{ marginTop: "2.7rem" }}
-                          >
-                            <h6 className="title_product_search">
-                              {value.name_product}
-                            </h6>
-                            <span className="price_product_search">
-                              {new Intl.NumberFormat("vi-VN", {
-                                style: "decimal",
-                                decimal: "VND",
-                              }).format(value.price_product) + " VNĐ"}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                )}
               </form>
               <div className="header-middle-right">
                 <ul className="hm-menu">

@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import AdminDish from "./Component/AdminDish";
 import AdminUser from "./Component/AdminUser";
+import AdminOrder from "./Component/AdminOrder";
 import { AdminHome } from "./Component/AdminHome.jsx";
 import User from "../API/User.jsx";
 import { useHistory } from "react-router-dom";
@@ -45,6 +46,7 @@ const AdminPage = () => {
     getItem("Home", "homes", <SettingOutlined />),
     getItem("User", "users", <UserOutlined />),
     getItem("Dish", "dishs", <AppstoreOutlined />),
+    getItem("Order", "orders", <AppstoreOutlined />),
   ];
 
   const [selectedPage, setSelectedPage] = useState("");
@@ -57,6 +59,8 @@ const AdminPage = () => {
         return <AdminUser />;
       case "dishs":
         return <AdminDish />;
+      case "orders":
+        return <AdminOrder />;
       default:
         return null;
     }
@@ -68,7 +72,6 @@ const AdminPage = () => {
 
   return (
     <div style={{ display: "flex" }}>
-   
       <Menu
         mode="inline"
         style={{

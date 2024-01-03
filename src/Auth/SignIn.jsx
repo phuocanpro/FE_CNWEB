@@ -11,15 +11,13 @@ import { changeCount } from "../Redux/Action/ActionCount";
 SignIn.propTypes = {};
 
 function SignIn(props) {
-  const dispatch = useDispatch();
-  
-
   const [username, set_username] = useState("");
   const [password, set_password] = useState("");
 
   const [error_username, set_error_username] = useState(false);
   const [error_password, set_error_password] = useState(false);
 
+  const [error, setError] = useState("");
   const [redirect, set_redirect] = useState(false);
 
   // Get carts từ redux khi user chưa đăng nhập
@@ -36,36 +34,25 @@ function SignIn(props) {
         username,
         password,
       };
-   
+
       //   const query = "?" + queryString.stringify(params);
 
       // const response = await User.Get_Detail_User(query)
-      const response = await User.Login(params)
-        .then((res) => res)
-      console.log(response)
+      const response = await User.Login(params).then((res) => res);
+      console.log(response);
 
-    
       if (response.status === "error") {
-        if (response.message === "Please enter enough information") {
-          set_error_username(true);
-          set_error_password(true);
-        } else if (response.message === "Email or password is not matched") {
-          set_error_username(false);
-          set_error_password(true);
-        }
+        setError(response.message);
       } else {
         sessionStorage.setItem("id_user", response.user.id);
-       
-          set_redirect(true);
-        
+
+        set_redirect(true);
 
         // const action = addSession(response.id);
         // dispatch(action);
         // const idUser= useSelector((state) => state?.idUser);
         // const action_count_change = changeCount(count_change);
         // dispatch(action_count_change);
-
-       
       }
     };
 
@@ -103,9 +90,6 @@ function SignIn(props) {
                         value={username}
                         onChange={(e) => set_username(e.target.value)}
                       />
-                      {error_username && (
-                        <span style={{ color: "red" }}>* Wrong Username!</span>
-                      )}
                     </div>
                     <div className="col-12 mb-20">
                       <label>Password</label>
@@ -116,9 +100,7 @@ function SignIn(props) {
                         value={password}
                         onChange={(e) => set_password(e.target.value)}
                       />
-                      {error_password && (
-                        <span style={{ color: "red" }}>* Wrong Password!</span>
-                      )}
+                      {error && <span style={{ color: "red" }}>{error}</span>}
                     </div>
                     <div className="col-md-8">
                       <div className="check-box d-inline-block ml-0 ml-md-2 mt-10">
@@ -126,7 +108,7 @@ function SignIn(props) {
                       </div>
                     </div>
                     <div className="col-md-4 mt-10 mb-20 text-left text-md-right">
-                      <a href="#"> Forgotten pasward?</a>
+                      <a href="#"> Forgotten password?</a>
                     </div>
                     <div className="col-md-12">
                       {redirect && <Redirect to="/" />}

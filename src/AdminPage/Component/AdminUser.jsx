@@ -50,36 +50,16 @@ const AdminUser = () => {
 
   const onUpdateUser = async () => {
     const res = await User.Put_User(stateUserDetails);
+    console.log("stateUserDetails", stateUserDetails);
     if (res.status === "SUCCESS") {
       message.success("Success");
       handleCloseDrawer();
+      const updatedUsers = await getAllUsers();
+      setUsers(Array.from(updatedUsers));
     } else {
       message.error("Error");
     }
   };
-
-  //   const mutationDeleteMany = useMutationHooks(async (data) => {
-  //     const { token, ...ids } = data;
-  //     const res = await UserService.deleteManyUser(ids, token);
-  //     return res;
-  //   });
-  //   const handleDeleteManyUsers = (ids) => {
-  //     mutationDeleteMany.mutate(
-  //       { ids: ids, token: user?.access_token },
-  //       {
-  //         onSettled: () => {
-  //           queryUser.refetch();
-  //         },
-  //       }
-  //     );
-  //   };
-
-  //   const {
-  //     data: dataDeletedMany,
-  //     isLoading: isLoadingDeletedMany,
-  //     isSuccess: isSuccessDeletedMany,
-  //     isError: isErrorDeletedMany,
-  //   } = mutationDeleteMany;
 
   const [userDetails, setUserDetails] = useState({});
   const fetchGetDetailsUser = async (rowSelected) => {
@@ -267,13 +247,6 @@ const AdminUser = () => {
     form.resetFields();
   };
 
-  //   useEffect(() => {
-  //     if (isSuccessDeletedMany && dataDeletedMany?.status === "OK") {
-  //       message.success();
-  //     } else if (isErrorDeletedMany) {
-  //       message.error();
-  //     }
-  //   }, [isSuccessDeletedMany, isErrorDeletedMany]);
   const handleDetailsUsers = () => {
     setIsOpenDrawer(true);
   };
@@ -305,7 +278,6 @@ const AdminUser = () => {
       <WrapperHeader>Manager Users</WrapperHeader>
       <div style={{ marginTop: "20px" }}>
         <TableComponent
-          //   handleDeleteMany={handleDeleteManyUsers}
           columns={columns}
           data={dataTable}
           onRow={(record, rowIndex) => {

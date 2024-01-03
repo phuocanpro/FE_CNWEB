@@ -5,6 +5,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import ModalComponent from "./ModalComponent";
 import InputComponent from "./InputComponent";
@@ -36,7 +37,7 @@ const AdminDish = () => {
   const [form] = Form.useForm();
 
   const onUpdateDish = async () => {
-    const res = await Product.Put_Dish(stateDishDetails);
+    const res = await Product.Put_Dish(stateDishDetails, rowSelected);
     if (res.status === "SUCCESS") {
       message.success("Success");
       handleCloseDrawer();
@@ -83,7 +84,6 @@ const AdminDish = () => {
       img: dishDetails?.img,
     });
     console.log("data", data);
-   
   };
   useEffect(() => {
     form.setFieldsValue(stateDishDetails);
@@ -183,7 +183,7 @@ const AdminDish = () => {
         }}
       />
     ),
-onFilter: (value, record) =>
+    onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -191,14 +191,23 @@ onFilter: (value, record) =>
       }
     },
   });
- 
-  const onFinish = () => {
-    const params = {
-      dishName: stateDish.dishName,
+
+  const CreateDish = async () => {
+    const data = {
+      name: stateDish.dishName,
       description: stateDish.description,
       price: stateDish.price,
       img: stateDish.img,
     };
+    const res = await Product.Create(data);
+    if (res.status === "success") {
+      handleCancel();
+      message.success("Success");
+      const updatedDishes = await getAllDishes();
+      setDishes(Array.from(updatedDishes));
+    } else {
+      message.error("Error");
+    }
   };
 
   const columns = [
@@ -227,14 +236,13 @@ onFilter: (value, record) =>
     },
   ];
   const dataTable = Array.isArray(dishes)
-  ? dishes?.map((dish) => {
-      return {
-        ...dish,
-        key: dish.id,
-      };
-    })
-  : [];
-    
+    ? dishes?.map((dish) => {
+        return {
+          ...dish,
+          key: dish.id,
+        };
+      })
+    : [];
 
   const handleCloseDrawer = () => {
     setIsOpenDrawer(false);
@@ -254,7 +262,6 @@ onFilter: (value, record) =>
     });
   };
 
-  
   const handleDetailsDishes = () => {
     setIsOpenDrawer(true);
   };
@@ -272,7 +279,6 @@ onFilter: (value, record) =>
       message.error("Error");
     }
   };
-  
 
   const handleOnchangeDetails = (e) => {
     setStateDishDetails({
@@ -307,7 +313,20 @@ onFilter: (value, record) =>
   };
   return (
     <div style={{ marginTop: "10px" }}>
-<WrapperHeader>Manager Dishes</WrapperHeader>
+      <WrapperHeader>Manager Dishes</WrapperHeader>
+      <div>
+        <Button
+          style={{
+            height: "150px",
+            width: "150px",
+            borderRadius: "6px",
+            borderStyle: "dashed",
+          }}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <PlusOutlined style={{ fontSize: "60px" }} />
+        </Button>
+      </div>
       <div style={{ marginTop: "20px" }}>
         <TableComponent
           columns={columns}
@@ -335,7 +354,7 @@ onFilter: (value, record) =>
           wrapperCol={{ span: 18 }}
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
-          onFinish={onFinish}
+          onFinish={CreateDish}
           autoComplete="off"
           form={form}
         >
@@ -354,14 +373,16 @@ onFilter: (value, record) =>
           <Form.Item
             label="Description"
             name="description"
-            rules={[{ required: true, message: "Please input description dish!" }]}
+            rules={[
+              { required: true, message: "Please input description dish!" },
+            ]}
           >
             <InputComponent
-                value={stateDish.description}
-                onChange={handleOnchange}
-                name="description"
-              />
-
+              value={stateDish.description}
+              onChange={handleOnchange}
+              name="description"
+            />
+          </Form.Item>
           <Form.Item
             label="Price"
             name="price"
@@ -400,7 +421,6 @@ onFilter: (value, record) =>
               Submit
             </Button>
           </Form.Item>
-          </Form.Item>
         </Form>
       </ModalComponent>
 
@@ -408,7 +428,7 @@ onFilter: (value, record) =>
         title="Details Dish"
         isOpen={isOpenDrawer}
         onClose={() => setIsOpenDrawer(false)}
-        width="90%"
+        width="50%"
       >
         <Form
           name="basic"
@@ -454,14 +474,16 @@ onFilter: (value, record) =>
               name="price"
             />
           </Form.Item>
-        
 
           <Form.Item
             label="Img"
             name="img"
             rules={[{ required: false, message: "Please input image!" }]}
           >
-            <WrapperUploadFile onChange={handleOnchangeAvatarDetails} maxCount={1}>
+            <WrapperUploadFile
+              onChange={handleOnchangeAvatarDetails}
+              maxCount={1}
+            >
               <Button type="button">Select File</Button>
               {stateDishDetails?.img && (
                 <img
