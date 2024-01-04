@@ -114,7 +114,7 @@ function Detail_Product(props) {
                             <div className="product-details-left">
                                 <div className="product-details-images slider-navigation-1">
                                     <div className="lg-image">
-                                        <img src={Image.BACKGROUND3} alt="product image" />
+                                        <img src={product.img} alt={product.name} />
                                     </div>
                                 </div>
                             </div>

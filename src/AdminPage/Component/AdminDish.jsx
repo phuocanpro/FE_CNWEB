@@ -22,13 +22,13 @@ const AdminDish = () => {
   const [dishes, setDishes] = useState([]);
   const [dishDetails, setDishDetails] = useState({});
   const [stateDish, setStateDish] = useState({
-    dishName: "",
+    name: "",
     description: "",
     price: "",
     img: "",
   });
   const [stateDishDetails, setStateDishDetails] = useState({
-    dishName: "",
+    name: "",
     description: "",
     price: "",
     img: "",
@@ -67,7 +67,7 @@ const AdminDish = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
     setStateDish({
-      dishName: "",
+      name: "",
       description: "",
       price: "",
       img: "",
@@ -78,7 +78,7 @@ const AdminDish = () => {
     const data = Product.Get_Detail_Product(rowSelected);
     setDishDetails(data);
     setStateDishDetails({
-      dishName: dishDetails?.name,
+      name: dishDetails?.name,
       description: dishDetails?.description,
       price: dishDetails?.price,
       img: dishDetails?.img,
@@ -194,7 +194,7 @@ const AdminDish = () => {
 
   const CreateDish = async () => {
     const data = {
-      name: stateDish.dishName,
+      name: stateDish.name,
       description: stateDish.description,
       price: stateDish.price,
       img: stateDish.img,
@@ -247,7 +247,7 @@ const AdminDish = () => {
   const handleCloseDrawer = () => {
     setIsOpenDrawer(false);
     setStateDishDetails({
-      dishName: "",
+      name: "",
       description: "",
       price: "",
       img: "",
@@ -303,13 +303,14 @@ const AdminDish = () => {
     const file = fileList[0];
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
+      // file.preview = file.originFileObj;
     }
 
-    console.log("file", file.preview);
     setStateDish({
       ...stateDish,
       img: file.preview,
     });
+    console.log("img", stateDish?.img);
   };
   return (
     <div style={{ marginTop: "10px" }}>
@@ -359,8 +360,8 @@ const AdminDish = () => {
           form={form}
         >
           <Form.Item
-            label="DishName"
-            name="dishName"
+            label="Name"
+            name="name"
             rules={[{ required: true, message: "Please input name dish!" }]}
           >
             <InputComponent
@@ -441,14 +442,14 @@ const AdminDish = () => {
           form={form}
         >
           <Form.Item
-            label="DishName"
-            name="dishName"
-            rules={[{ required: true, message: "Please input dishName!" }]}
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input name!" }]}
           >
             <InputComponent
-              value={stateDishDetails.dishName}
+              value={stateDishDetails.name}
               onChange={handleOnchangeDetails}
-              name="dishName"
+              name="name"
             />
           </Form.Item>
 

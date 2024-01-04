@@ -14,7 +14,7 @@ import Order from "../../API/OrderAPI";
 
 const AdminOrder = () => {
   const [orders, setOrders] = useState([]);
-
+  const [totalPrice, setTotalPrice] = useState();
   const getAllOrders = async () => {
     const res = Order.GetAll();
     return res;
@@ -25,6 +25,7 @@ const AdminOrder = () => {
       try {
         const ordersData = await getAllOrders();
         setOrders(Array.from(ordersData?.orders));
+        setTotalPrice(ordersData?.total);
       } catch (error) {
         // Handle error
         console.log("err", error);
@@ -151,7 +152,10 @@ const AdminOrder = () => {
                   <strong>Quantity:</strong> {dish.quantity}
                 </p>
                 <p>
-                  <strong>Payment Method:</strong> {dish.payment_method}
+                  <strong>Total Item:</strong> {dish.total}
+                </p>
+                <p>
+                  <strong>Order Date:</strong> {dish.order_date}
                 </p>
               </div>
             ))}
@@ -183,6 +187,7 @@ const AdminOrder = () => {
       <div style={{ marginTop: "20px" }}>
         <TableComponent columns={columns} data={dataTable} />
       </div>
+      <h2>Total revenue: ${totalPrice}</h2>
     </div>
   );
 };
