@@ -20,7 +20,7 @@ const AdminDish = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [dishes, setDishes] = useState([]);
-  const [dishDetails, setDishDetails] = useState({});
+
   const [stateDish, setStateDish] = useState({
     name: "",
     description: "",
@@ -74,6 +74,8 @@ const AdminDish = () => {
     });
     form.resetFields();
   };
+
+  const [dishDetails, setDishDetails] = useState({});
   const fetchGetDetailsDish = async (rowSelected) => {
     const data = Product.Get_Detail_Product(rowSelected);
     setDishDetails(data);
@@ -83,7 +85,7 @@ const AdminDish = () => {
       price: dishDetails?.price,
       img: dishDetails?.img,
     });
-    console.log("data", data);
+    console.log("data", dishDetails);
   };
   useEffect(() => {
     form.setFieldsValue(stateDishDetails);
@@ -292,8 +294,6 @@ const AdminDish = () => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
-
-    console.log("file", file.preview);
     setStateDishDetails({
       ...stateDishDetails,
       img: file.preview,

@@ -135,11 +135,11 @@ const AdminOrder = () => {
     {
       title: "Dishes",
       dataIndex: "dishes",
-      sorter: (a, b) => a.dishes - b.dishes,
+      sorter: (a, b) => (a.dishes || []).length - (b.dishes || []).length,
       ...getColumnSearchProps("dishes"),
       render: (dishes) => (
         <div>
-          {Array.isArray(dishes) &&
+          {Array.isArray(dishes) && dishes.length > 0 ? (
             dishes.map((dish, index) => (
               <div key={index} style={{ marginBottom: "5px" }}>
                 <p>
@@ -157,8 +157,12 @@ const AdminOrder = () => {
                 <p>
                   <strong>Order Date:</strong> {dish.order_date}
                 </p>
+                <br></br>
               </div>
-            ))}
+            ))
+          ) : (
+            <p>No dishes available</p>
+          )}
         </div>
       ),
     },

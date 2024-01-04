@@ -50,7 +50,6 @@ const AdminUser = () => {
 
   const onUpdateUser = async () => {
     const res = await User.Put_User(stateUserDetails);
-    console.log("stateUserDetails", stateUserDetails);
     if (res.status === "SUCCESS") {
       message.success("Success");
       handleCloseDrawer();
@@ -65,6 +64,7 @@ const AdminUser = () => {
   const fetchGetDetailsUser = async (rowSelected) => {
     const response = await User.Get_User(rowSelected);
     setUserDetails(response);
+    console.log("userDetails", userDetails);
     setStateUserDetails({
       id: userDetails?.id,
       name: userDetails?.name,
