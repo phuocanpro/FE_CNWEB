@@ -21,6 +21,11 @@ const Cart = {
         const url = `/api/removeItemCart?user_id=${data.user_id}&dish_id=${data.dish_id}`
         console.log(data)
         return axiosClient.delete(url)
+    },
+
+    removeAllCarts: user_id => {
+        const url = `/api/removeAllCart?user_id=${user_id}`
+        return axiosClient.delete(url)
     }
 
 }

@@ -145,11 +145,17 @@ function Checkout(props) {
         })
             .then(r => {
                 if (r.status !== 'error') {
-                    set_redirect(true)
+                    Cart.removeAllCarts(user_id)
+                        .then(r => {
+                            console.log(r)
+                            if (r.status === 'success') {
+                                set_redirect(true)
 
-                    // Hàm này dùng để load lại phần header bằng Redux
-                    const action_count_change = changeCount(count_change)
-                    dispatch(action_count_change)
+                                // Hàm này dùng để load lại phần header bằng Redux
+                                const action_count_change = changeCount(count_change)
+                                dispatch(action_count_change)
+                            }
+                        })
                 }
             })
 
