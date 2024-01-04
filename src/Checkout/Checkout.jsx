@@ -197,6 +197,32 @@ function Checkout(props) {
 
     localStorage.setItem("price", price_shipping);
     set_price(price_shipping);
+    const dispatch = useDispatch()
+
+    // Hàm này dùng để thanh toán offline
+    const handler_Checkout = async (data) => {
+
+        set_load_order(true)
+
+        OrderAPI.post_order({
+            user_id: user_id,
+            dishes: carts,
+        })
+            .then(r => {
+                if (r.status !== 'error') {
+                    Cart.removeAllCarts(user_id)
+                        .then(r => {
+                            console.log(r)
+                            if (r.status === 'success') {
+                                set_redirect(true)
+
+                                // Hàm này dùng để load lại phần header bằng Redux
+                                const action_count_change = changeCount(count_change)
+                                dispatch(action_count_change)
+                            }
+                        })
+                }
+            })
 
     set_information({
       fullname: information.fullname,
