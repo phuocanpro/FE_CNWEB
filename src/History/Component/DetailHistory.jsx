@@ -25,7 +25,7 @@ function DetailHistory(props) {
 
             set_order(response)
 
-            const response_detail_order = await Detail_OrderAPI.get_detail_order(id)
+            const response_detail_order = await OrderAPI.get_detail_order(id)
 
             set_detail_order(response_detail_order)
 

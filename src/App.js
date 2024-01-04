@@ -110,7 +110,6 @@ const Search = lazy(() => {
 });
 
 function App() {
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -142,7 +141,6 @@ function App() {
             <Route path="/signup" component={SignUp} />
             <Route path="/success" component={OrderSuccess} />
             <Route path="/fail" component={OrderFail} />
-            <Route path="/history" component={History} />
             <Route path="/profile/:id" component={Profile} />
             <Route path="/search" component={Search} />
             <Route path="/admin" component={Admin} />

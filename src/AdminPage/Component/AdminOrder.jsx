@@ -24,8 +24,7 @@ const AdminOrder = () => {
     const fetchData = async () => {
       try {
         const ordersData = await getAllOrders();
-        console.log("ordersData", ordersData);
-        setOrders(Array.from(ordersData));
+        setOrders(Array.from(ordersData?.orders));
       } catch (error) {
         // Handle error
         console.log("err", error);
@@ -168,7 +167,11 @@ const AdminOrder = () => {
   const dataTable = Array.isArray(orders)
     ? orders?.map((order) => {
         return {
-          ...order,
+          username: order?.user_name,
+          phone: order?.phone_number,
+          address: order?.address,
+          dishes: order?.dishes,
+          total: order?.total_price,
           key: order.id,
         };
       })

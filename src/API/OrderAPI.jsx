@@ -11,6 +11,11 @@ const OrderAPI = {
     return axiosClient.get(url);
   },
 
+  GetAll: () => {
+    const url = `/api/getAllOrder`;
+    return axiosClient.get(url);
+  },
+
   get_detail: (id) => {
     const url = `/api/Payment/order/detail/${id}`;
     return axiosClient.get(url);
